@@ -7,7 +7,7 @@ DATABASE = 'inventario.db'
 
 
 def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
+    conn = sqlite3.connect(DATABASE,check_same_thread=False)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -97,12 +97,14 @@ class Inventario:
         return jsonify({'message': 'Producto no encontrado.'}), 404
     
     def listar_productos(self):
+        print("listar productos")
         self.cursor.execute("SELECT * FROM productos")
         rows = self.cursor.fetchall()
         productos = []
         for row in rows:
             codigo, descripcion, cantidad, precio = row
             producto = {'codigo': codigo, 'descripcion': descripcion, 'cantidad': cantidad, 'precio': precio}
+            print(f'{codigo}\t{descripcion}\t{cantidad}\t{precio}')
             productos.append(producto)
         return jsonify(productos), 200
     
